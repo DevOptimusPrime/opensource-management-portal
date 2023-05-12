@@ -2,13 +2,22 @@ name: Linux Container Node Workflow
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Commitish to build'
+        required: false
+        default: ${{ github.sha || github.event.repository.default_branch }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ inputs.tag }}
+
     - uses: azure/docker-login@v1
       with:
         login-server: nihportal.azurecr.io
